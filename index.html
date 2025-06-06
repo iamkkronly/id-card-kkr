@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID Card Maker</title>
+    <style>
+/* Main container styles */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+}
+
+/* Header styles */
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  color: #1a1a1a;
+  margin-bottom: 0.5rem;
+}
+
+.header p {
+  font-size: 1.1rem;
+  color: #666;
+}
+
+/* Main app container */
+.app-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+/* Form section styles */
+.form-section {
+  flex: 1;
+  min-width: 300px;
+}
+
+.form-section h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  color: #111827;
+}
+
+.form-group textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.description-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.generate-btn {
+  align-self: flex-start;
+  background-color: #6366f1;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.generate-btn:hover {
+  background-color: #4f46e5;
+}
+
+.generated-text {
+  font-size: 0.875rem;
+  color: #6366f1;
+  margin-top: 0.5rem;
+  font-style: italic;
+  display: none;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.preview-btn,
+.download-btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.preview-btn {
+  background-color: #0ea5e9;
+  color: white;
+}
+
+.preview-btn:hover {
+  background-color: #0284c7;
+}
+
+.download-btn {
+  background-color: #10b981;
+  color: white;
+}
+
+.download-btn:hover {
+  background-color: #059669;
+}
+
+/* Preview section styles */
+.preview-section {
+  flex: 1;
+  min-width: 300px;
+}
+
+.preview-section h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.card-preview {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  background-color: #f9fafb;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-preview {
+  text-align: center;
+  color: #6b7280;
+}
+
+/* ID Card styles */
+.id-card {
+  width: 350px;
+  height: 550px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Card style variations */
+.id-card.corporate {
+  background-color: white;
+  border: 1px solid #e5e7eb;
+}
+
+.id-card.corporate .card-header {
+  background-color: #1e40af;
+  color: white;
+}
+
+.id-card.corporate .card-footer {
+  background-color: #1e40af;
+  color: white;
+}
+
+.id-card.modern {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.id-card.modern .card-header {
+  background-color: #0f172a;
+  color: white;
+}
+
+.id-card.modern .card-footer {
+  background-color: #0f172a;
+  color: white;
+}
+
+.id-card.minimal {
+  background-color: white;
+  border: 1px solid #e5e7eb;
+}
+
+.id-card.minimal .card-header {
+  background-color: #f1f5f9;
+  color: #0f172a;
+  border-bottom: 2px solid #cbd5e1;
+}
+
+.id-card.minimal .card-footer {
+  background-color: #f1f5f9;
+  color: #0f172a;
+  border-top: 2px solid #cbd5e1;
+}
+
+.id-card.colorful {
+  background-color: white;
+  border: 1px solid #e5e7eb;
+}
+
+.id-card.colorful .card-header {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: white;
+}
+
+.id-card.colorful .card-footer {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: white;
+}
+
+.card-header {
+  padding: 1rem;
+  text-align: center;
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.card-body {
+  flex: 1;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.photo-container {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  border: 3px solid #e5e7eb;
+}
+
+.id-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-details {
+  text-align: center;
+  width: 100%;
+}
+
+.card-details h4 {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+  color: #111827;
+}
+
+.card-details .title {
+  font-weight: 500;
+  color: #4b5563;
+  margin-bottom: 0.75rem;
+}
+
+.card-details .id-number {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
+}
+
+.contact-info {
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+
+.contact-info p {
+  margin: 0.25rem 0;
+  color: #4b5563;
+}
+
+.description {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-style: italic;
+  margin-top: 1rem;
+  line-height: 1.4;
+}
+
+.card-footer {
+  padding: 0.75rem;
+  text-align: center;
+  font-size: 0.75rem;
+}
+
+/* Footer styles */
+.footer {
+  margin-top: 3rem;
+  text-align: center;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .app-container {
+    flex-direction: column;
+  }
+  
+  .id-card {
+    width: 100%;
+    max-width: 350px;
+  }
+}
+
+/* Loading indicator */
+.loading {
+  position: relative;
+  pointer-events: none;
+}
+
+.loading::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: #4b5563;
+}
+
+.loading::before {
+  content: "Loading...";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  font-size: 1rem;
+  color: #4b5563;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>ID Card Maker</h1>
+            <p>Create professional ID cards with AI-powered descriptions</p>
+        </header>
+
+        <div class="app-container">
+            <div class="form-section">
+                <h2>Card Information</h2>
+                
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" placeholder="John Doe">
+                </div>
+
+                <div class="form-group">
+                    <label for="title">Job Title</label>
+                    <input type="text" id="title" name="title" placeholder="Software Engineer">
+                </div>
+
+                <div class="form-group">
+                    <label for="company">Company</label>
+                    <input type="text" id="company" name="company" placeholder="Tech Solutions Inc.">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="john.doe@example.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="text" id="phone" name="phone" placeholder="+1 (555) 123-4567">
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <input type="text" id="address" name="address" placeholder="123 Main St, City, Country">
+                </div>
+
+                <div class="form-group">
+                    <label for="idNumber">ID Number</label>
+                    <input type="text" id="idNumber" name="idNumber" placeholder="EMP-12345">
+                </div>
+
+                <div class="form-group">
+                    <label for="photo">Photo</label>
+                    <input type="file" id="photo" name="photo" accept="image/*">
+                </div>
+
+                <div class="form-group">
+                    <label for="cardStyle">Card Style</label>
+                    <select id="cardStyle" name="cardStyle">
+                        <option value="corporate">Corporate</option>
+                        <option value="modern">Modern</option>
+                        <option value="minimal">Minimal</option>
+                        <option value="colorful">Colorful</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <div class="description-container">
+                        <textarea id="description" name="description" placeholder="Professional description (or generate with AI)"></textarea>
+                        <button id="generateBtn" class="generate-btn">Generate with AI</button>
+                    </div>
+                    <p id="generatedText" class="generated-text"></p>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="previewBtn" class="preview-btn">Preview Card</button>
+                    <button id="downloadBtn" class="download-btn">Download Card</button>
+                </div>
+            </div>
+
+            <div class="preview-section">
+                <h2>Card Preview</h2>
+                <div class="card-preview">
+                    <div id="cardPreview" class="empty-preview">
+                        <p>Upload a photo to see your ID card preview</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>© 2025 ID Card Maker</p>
+        </footer>
+    </div>
+
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+// ID Card Maker JavaScript
+// SECURITY WARNING: This implementation puts the API key directly in the frontend code
+// In a production environment, you should use a backend proxy to protect your API key
+
+// Gemini API configuration
+const API_KEY = "AIzaSyD3fNCe8FZghIk4Xh6BAs6A3ds1_7jxY1w";
+const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
+
+// DOM Elements
+const form = {
+  name: document.getElementById('name'),
+  title: document.getElementById('title'),
+  company: document.getElementById('company'),
+  email: document.getElementById('email'),
+  phone: document.getElementById('phone'),
+  address: document.getElementById('address'),
+  idNumber: document.getElementById('idNumber'),
+  photo: document.getElementById('photo'),
+  cardStyle: document.getElementById('cardStyle'),
+  description: document.getElementById('description'),
+  generateBtn: document.getElementById('generateBtn'),
+  previewBtn: document.getElementById('previewBtn'),
+  downloadBtn: document.getElementById('downloadBtn'),
+  generatedText: document.getElementById('generatedText'),
+  cardPreview: document.getElementById('cardPreview')
+};
+
+// Card data state
+let cardData = {
+  name: '',
+  title: '',
+  company: '',
+  email: '',
+  phone: '',
+  address: '',
+  idNumber: '',
+  description: '',
+  photoUrl: '',
+  cardStyle: 'corporate'
+};
+
+// Event listeners
+document.addEventListener('DOMContentLoaded', () => {
+  // Input change handlers
+  form.name.addEventListener('input', updateCardData);
+  form.title.addEventListener('input', updateCardData);
+  form.company.addEventListener('input', updateCardData);
+  form.email.addEventListener('input', updateCardData);
+  form.phone.addEventListener('input', updateCardData);
+  form.address.addEventListener('input', updateCardData);
+  form.idNumber.addEventListener('input', updateCardData);
+  form.description.addEventListener('input', updateCardData);
+  form.cardStyle.addEventListener('change', updateCardData);
+  
+  // Photo upload handler
+  form.photo.addEventListener('change', handlePhotoUpload);
+  
+  // Button handlers
+  form.generateBtn.addEventListener('click', generateDescription);
+  form.previewBtn.addEventListener('click', generatePreview);
+  form.downloadBtn.addEventListener('click', downloadCard);
+});
+
+// Update card data from form inputs
+function updateCardData(e) {
+  const { id, value } = e.target;
+  cardData[id] = value;
+  updateCardPreview();
+}
+
+// Handle photo upload
+function handlePhotoUpload(e) {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      cardData.photoUrl = event.target.result;
+      updateCardPreview();
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+// Generate AI description using Gemini API
+async function generateDescription() {
+  if (!cardData.name || !cardData.title || !cardData.company) {
+    alert('Please enter your name, job title, and company to generate a description.');
+    return;
+  }
+  
+  try {
+    setLoading(true);
+    
+    const prompt = `Generate a professional, concise description (maximum 2 sentences) for an ID card for ${cardData.name}, who works as a ${cardData.title} at ${cardData.company}.`;
+    
+    const requestBody = {
+      contents: [
+        {
+          parts: [
+            {
+              text: prompt,
+            },
+          ],
+        },
+      ],
+    };
+
+    const response = await fetch(`${API_URL}?key=${API_KEY}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Gemini API error:", errorData);
+      throw new Error(`API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    
+    if (data.candidates && data.candidates.length > 0) {
+      const generatedText = data.candidates[0].content.parts[0].text.trim();
+      form.description.value = generatedText;
+      form.generatedText.textContent = `AI Generated: ${generatedText}`;
+      form.generatedText.style.display = 'block';
+      cardData.description = generatedText;
+      updateCardPreview();
+    } else {
+      throw new Error("No response from Gemini API");
+    }
+  } catch (error) {
+    console.error('Error generating description:', error);
+    alert('Failed to generate description. Please try again later.');
+  } finally {
+    setLoading(false);
+  }
+}
+
+// Generate card preview
+function generatePreview() {
+  // Scroll to the preview section
+  document.querySelector('.preview-section').scrollIntoView({ 
+    behavior: 'smooth',
+    block: 'start'
+  });
+}
+
+// Download card as image or PDF
+async function downloadCard() {
+  const cardElement = document.querySelector('.id-card');
+  
+  if (!cardElement) {
+    alert('Please complete the form and upload a photo first.');
+    return;
+  }
+
+  try {
+    setLoading(true);
+    
+    // Ask user for preferred format
+    const format = window.confirm(
+      'Would you like to download as PDF? Click OK for PDF, Cancel for PNG image.'
+    ) ? 'pdf' : 'png';
+    
+    if (format === 'pdf') {
+      await exportAsPDF(cardElement);
+    } else {
+      await exportAsImage(cardElement);
+    }
+  } catch (error) {
+    console.error('Error downloading card:', error);
+    alert('Failed to download the ID card. Please try again.');
+  } finally {
+    setLoading(false);
+  }
+}
+
+// Export card as image
+async function exportAsImage(cardElement) {
+  try {
+    const canvas = await html2canvas(cardElement, {
+      scale: 2, // Higher scale for better quality
+      backgroundColor: null,
+      logging: false,
+    });
+    
+    const imageUrl = canvas.toDataURL('image/png');
+    downloadFile(imageUrl, `${cardData.name.replace(/\s+/g, '_')}_id_card.png`);
+  } catch (error) {
+    console.error('Error exporting card as image:', error);
+    throw error;
+  }
+}
+
+// Export card as PDF
+async function exportAsPDF(cardElement) {
+  try {
+    const canvas = await html2canvas(cardElement, {
+      scale: 2,
+      backgroundColor: null,
+      logging: false,
+    });
+    
+    const imgData = canvas.toDataURL('image/png');
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: [100, 160], // ID card size in mm
+    });
+    
+    // Calculate positioning to center the image
+    const imgWidth = 90; // mm
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    const x = (pdf.internal.pageSize.getWidth() - imgWidth) / 2;
+    const y = 10;
+    
+    // Add the image to the PDF
+    pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
+    
+    // Add metadata
+    pdf.setProperties({
+      title: `ID Card - ${cardData.name}`,
+      subject: `${cardData.company} ID Card`,
+      creator: 'ID Card Maker',
+    });
+    
+    pdf.save(`${cardData.name.replace(/\s+/g, '_')}_id_card.pdf`);
+  } catch (error) {
+    console.error('Error exporting card as PDF:', error);
+    throw error;
+  }
+}
+
+// Helper function to download a file
+function downloadFile(data, filename) {
+  const link = document.createElement('a');
+  link.href = data;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+// Update card preview based on current data
+function updateCardPreview() {
+  if (!cardData.photoUrl) {
+    form.cardPreview.innerHTML = '<p>Upload a photo to see your ID card preview</p>';
+    form.cardPreview.className = 'empty-preview';
+    return;
+  }
+  
+  form.cardPreview.className = '';
+  form.cardPreview.innerHTML = `
+    <div class="id-card ${cardData.cardStyle}">
+      <div class="card-header">
+        <h3>${cardData.company || 'Company Name'}</h3>
+      </div>
+      <div class="card-body">
+        <div class="photo-container">
+          <img src="${cardData.photoUrl}" alt="ID Photo" class="id-photo">
+        </div>
+        <div class="card-details">
+          <h4>${cardData.name || 'Full Name'}</h4>
+          <p class="title">${cardData.title || 'Job Title'}</p>
+          <p class="id-number">ID: ${cardData.idNumber || 'EMP-12345'}</p>
+          <div class="contact-info">
+            ${cardData.email ? `<p class="email">${cardData.email}</p>` : ''}
+            ${cardData.phone ? `<p class="phone">${cardData.phone}</p>` : ''}
+          </div>
+          ${cardData.description ? `<p class="description">${cardData.description}</p>` : ''}
+        </div>
+      </div>
+      <div class="card-footer">
+        <p>${cardData.address || 'Company Address'}</p>
+      </div>
+    </div>
+  `;
+}
+
+// Set/remove loading state
+function setLoading(isLoading) {
+  const container = document.querySelector('.container');
+  if (isLoading) {
+    container.classList.add('loading');
+  } else {
+    container.classList.remove('loading');
+  }
+}
+    </script>
+</body>
+</html>
